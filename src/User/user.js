@@ -124,10 +124,10 @@ export function setUserListener(){
 
 // create account
 export function createAccount(_user,_info){
-  console.log('create');
   return async (dispatch) => {
   await firebaseRef.child('user/'+_user).set(_info)
   dispatch(updateUserInfo(_user,_info))
+  dispatch(toggleModal())
   dispatch(toggleHasAccount(true))
   }
 

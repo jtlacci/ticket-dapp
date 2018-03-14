@@ -13,7 +13,7 @@ class App extends Component {
     return (
       <div className="App">
 
-        <h2>{'DAPPDEVS (DEV)ENTS'}</h2>
+        <h2>{'DAPPDEVS EVENTS'}</h2>
         {this.props.children}
       </div>
     );
