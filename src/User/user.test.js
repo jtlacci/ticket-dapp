@@ -6,13 +6,22 @@ const UPDATE_INFO = 'user/UPDATE_INFO'
 const UPDATE = 'user/UPDATE'
 const TOGGLE_HAS_ACCOUNT = 'user/TOGGLE_HAS_ACCOUNT'
 const TOGGLE_HAS_WEB3 = 'user/TOGGLE_HAS_WEB3'
+const TOGGLE_MODAL = 'user/TOGGLE_MODAL'
+const UPDATE_MODAL = 'user/UPDATE_MODAL'
 
 describe('user', () => {
+  const initialModal = {
+    first: '',
+    last: '',
+    email: '',
+  }
   const initialState = {
     currentUser: {},
     currentInfo: {},
     hasAccount: false,
     hasWeb3: false,
+    modalIsOpen: false,
+    modalElements: initialModal,
   }
 
   it('should have initial state', () =>{
@@ -56,7 +65,7 @@ describe('user', () => {
   it('should toggle has account', () =>{
     expect(
       reducer(undefined, {
-        type: TOGGLE_HAS_ACCOUNT,
+        type: TOGGLE_HAS_ACCOUNT,bool:true
       })
     ).toEqual(
       {...initialState,
@@ -67,11 +76,41 @@ describe('user', () => {
   it('should toggle has web3', () =>{
     expect(
       reducer(undefined, {
-        type: TOGGLE_HAS_WEB3,
+        type: TOGGLE_HAS_WEB3,bool:true
       })
     ).toEqual(
       {...initialState,
         hasWeb3:true
+      }
+    )
+  })
+  it('should toggle modal', () =>{
+    expect(
+      reducer(undefined, {
+        type: TOGGLE_MODAL
+      })
+    ).toEqual(
+      {...initialState,
+        modalIsOpen:true
+      }
+    )
+  })
+  it('should update modal', () =>{
+    let modalInfo = {
+      elem1: 'test1'
+    }
+    expect(
+      reducer(undefined, {
+        type: UPDATE_MODAL,payload:modalInfo
+      })
+    ).toEqual(
+      {...initialState,
+        modalElements: {
+          first: '',
+          last: '',
+          email: '',
+          elem1: 'test1'
+        }
       }
     )
   })

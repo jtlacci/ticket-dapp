@@ -4,14 +4,29 @@ import {bindActionCreators} from 'redux';
 
 var _ = require('lodash');
 
+import UserModal from './UserModal'
+
 import * as userActions from '../user';
 
+const UserButton = (text, func) => {
+  return(
+    <div >
+      {text}
+    </div>
+  )
+}
 
 class UserContainer extends React.Component {
   componentDidMount(){
     this.props.checkWeb3()
   }
 
+  getAccount(){
+    let acct = this.props.currentUser
+    if(!_.isEmpty(acct)){
+      return('Account: '+this.props.currentUser)
+    }
+  }
   getMessage(){
     // if web3 not detected
     if(!this.props.hasWeb3){
@@ -27,9 +42,27 @@ class UserContainer extends React.Component {
     }
   }
 
+  getLoad(){
+    //if web3 account detected
+    if(!_.isEmpty(this.props.currentUser)){
+      //if no dappdev account detected
+      if(this.props.hasAccount == false){
+        if(!this.props.modalIsOpen){
+          return UserButton('Sign-Up')
+        }else{
+          return UserModal(this.props.updateModal,this.props.modalElements)
+        }
+      }
+    }
+  }
+
   render() {
     return (
-      <div>{this.getMessage()}</div>
+      <div>
+        <p>{this.getAccount()}</p>
+        <p>{this.getMessage()}</p>
+        {this.getLoad()}
+      </div>
     )
   }
 }
@@ -40,6 +73,9 @@ function mapStateToProps({user}, props) {
     currentInfo:user.currentInfo,
     hasWeb3:user.hasWeb3,
     hasAccount:user.hasAccount,
+    modalIsOpen:user.modalIsOpen,
+    modalElements:user.modalElements,
+    updateModal:user.updateModal
     }
 }
 
