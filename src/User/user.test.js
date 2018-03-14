@@ -5,13 +5,14 @@ const CREATE_ACCOUNT= 'user/CREATE_ACCOUNT'
 const UPDATE_INFO = 'user/UPDATE_INFO'
 const UPDATE = 'user/UPDATE'
 const TOGGLE_HAS_ACCOUNT = 'user/TOGGLE_HAS_ACCOUNT'
-
+const TOGGLE_HAS_WEB3 = 'user/TOGGLE_HAS_WEB3'
 
 describe('user', () => {
   const initialState = {
     currentUser: {},
     currentInfo: {},
     hasAccount: false,
+    hasWeb3: false,
   }
 
   it('should have initial state', () =>{
@@ -60,6 +61,17 @@ describe('user', () => {
     ).toEqual(
       {...initialState,
         hasAccount:true
+      }
+    )
+  })
+  it('should toggle has web3', () =>{
+    expect(
+      reducer(undefined, {
+        type: TOGGLE_HAS_WEB3,
+      })
+    ).toEqual(
+      {...initialState,
+        hasWeb3:true
       }
     )
   })
