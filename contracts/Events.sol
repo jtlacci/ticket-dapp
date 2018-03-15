@@ -1,15 +1,11 @@
 pragma solidity ^0.4.17;
 
 import "./Owned.sol";
-import "./EventToken.sol";
 
 contract Events is Owned
 {
     // Event has a name
     string public name;
-
-    // Event token
-    EventToken public token;
 
     // Number of seats total
     uint256 public seats;
