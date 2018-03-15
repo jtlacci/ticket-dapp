@@ -16,11 +16,11 @@ const ModalInputs = (handleChange,_args) => {
 
 //@arg takes handleChange function
 //@arg takes object of {input names : input state value}
-const UserModal = (handleChange,_args) => {
+const UserModal = ({_handleChange,_inputs}) => {
   return(
     <div>
       <p>{'Sign-Up Form'}</p>
-      {ModalInputs(handleChange,_args)}
+      {ModalInputs(_handleChange,_inputs)}
     </div>)
 }
 

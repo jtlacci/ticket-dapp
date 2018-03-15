@@ -26,7 +26,7 @@ contract Events is Owned
     address[] public ticketHolders;
 
     // Tickets Purchased Receipt
-    event TicketReceipt(uint256 ticketsBought, uint256 change);
+    event TicketReceipt(address buyer, uint256 ticketsBought, uint256 change);
     event RefundFailed(address holder, uint256 amount);
 
     function Events(string _name,
@@ -71,7 +71,7 @@ contract Events is Owned
         // Return the change
         uint256 change = msg.value - (ticketsBought * price);
         msg.sender.transfer(change);
-        TicketReceipt(ticketsBought, change);
+        TicketReceipt(msg.sender,ticketsBought, change);
     }
 
     function refund(uint256 numTickets)

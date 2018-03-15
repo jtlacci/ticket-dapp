@@ -5,6 +5,7 @@ import {bindActionCreators} from 'redux';
 var _ = require('lodash');
 
 import UserModal from './UserModal'
+import UserButton from './UserButton'
 
 import * as userActions from '../user';
 
@@ -13,20 +14,6 @@ const NO_WEB3_ACCOUNT = 'NO_WEB3_ACCOUNT'
 const NOT_MEMBER = 'NOT_MEMBER'
 const MEMBER = 'MEMBER'
 
-
-const UserButton = (text, func,isDisabled) => {
-  if(isDisabled){
-    return(
-      <div>
-        {text}
-      </div>)
-  }else{
-    return(
-      <div onClick={(e)=>{func()}}>
-        {text}
-      </div>)
-  }
-}
 
 class UserContainer extends React.Component {
   componentDidMount(){
@@ -48,35 +35,48 @@ class UserContainer extends React.Component {
     }if(userState == NOT_MEMBER){
       return('Please Sign Up For DappDevs')
     }if(userState == MEMBER){
-      return('Welcome To DappDevs')
+      return('Welcome To DappDevs ' + this.props.currentInfo.first)
     }
   }
 
-  getLoad(){
-    if(this.props.userState == NOT_MEMBER && !this.props.modalIsOpen){
-      return UserButton('Sign-Up',this.props.toggleModal)
-      }
-  }
-
-  handleSubmit(){
+  handleSubmit = () => {
     this.props.createAccount(this.props.currentUser,
       this.props.modalElements)
   }
 
   render() {
-    return (
-      <div>
+    if(this.props.userState === NOT_MEMBER){
+      return(
+        <div>
         <p>{this.getAccount()}</p>
         <p>{this.getMessage()}</p>
-        {this.getLoad()}
-        {this.props.modalIsOpen &&
-          UserModal(this.props.updateModal,this.props.modalElements)}
-        {this.props.modalIsOpen &&
-          UserButton('Submit',this.handleSubmit)}
-      </div>
-    )
+          <UserButton
+            text='Sign-Up'
+            onClick={this.props.toggleModal}/>
+          {this.props.modalIsOpen &&
+            <div>
+              <UserModal
+                _handleChange = {this.props.updateModal}
+                _inputs = {this.props.modalElements}
+              />
+              <UserButton
+                text ='Submit'
+                onClick = {this.handleSubmit}
+              />
+            </div>}
+        </div>
+      )
+    }else{
+      return(
+        <div>
+        <p>{this.getAccount()}</p>
+        <p>{this.getMessage()}</p>
+        </div>
+      )
+    }
   }
 }
+
 
 function mapStateToProps({user}, props) {
   var userState;
