@@ -5,6 +5,7 @@ import firebaseRef from '../Utils/firebase'
 var _ = require('lodash');
 
 const ADD = 'event/ADD'
+const ADD_INFO = 'event/ADD_INFO'
 
 const initialState = {
   eventsIndex:{},
@@ -21,6 +22,8 @@ export default function reducer(state = initialState, action){
           [action.eventAddress]:eventIndex
         },
         eventsArr:[...state.eventsArr,action.eventAddress]}
+    case ADD_INFO:
+      return{...state, [action.eventAddress]:action.info}
     default:
       return state
   }
@@ -31,8 +34,10 @@ function addEvent(eventAddress){
   { type:ADD, eventAddress}
 }
 
-
 //look up event info
+function addEventInfo(eventAddress,info){
+  { type:ADD_INFO, eventAddress, info}
+}
 
 //look up user in event log
 
@@ -63,10 +68,15 @@ export function lookupEvents(){
 export function getEventInfo(_eventAddress){
   return async(dispatch) => {
     let instance = await eventContract.at(_eventAddress)
-    let infoArr = await Promise.all([
-      instance.
-    ])
-
+    let [name,seats,seatsAvailable,price] =
+      await Promise.all([
+        instance.name.call(),
+        instance.seats.call(),
+        instance.seatsAvailable.call(),
+        instance.price.call()
+      ])
+    let info = {name, seats, seatsAvailable, price}
+    dispatch(addEventInfo(_eventAddress,info))
   }
 }
 
