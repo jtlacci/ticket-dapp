@@ -1,7 +1,7 @@
 pragma solidity ^0.4.17;
 
-import "Owned.sol";
-import "EventToken.sol";
+import "./Owned.sol";
+import "./EventToken.sol";
 
 contract Events is Owned
 {

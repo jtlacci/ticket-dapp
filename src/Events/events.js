@@ -1,17 +1,35 @@
 import web3 from '../Utils/web3'
+import eventContract from '../Utils/web3Contracts'
 import firebaseRef from '../Utils/firebase'
 
 var _ = require('lodash');
 
+const ADD = 'event/ADD'
 
-export default function reducer(state = {}, action){
+const initialState = {
+  eventsIndex:{},
+  eventsArr:[]
+}
+
+export default function reducer(state = initialState, action){
   switch(action.type){
+    case ADD:
+      let eventIndex = state.eventsArr.length
+      return {...state,
+        eventsIndex:{
+          ...state.eventsIndex,
+          [action.eventAddress]:eventIndex
+        },
+        eventsArr:[...state.eventsArr,action.eventAddress]}
     default:
       return state
   }
 }
 
 // add event to list
+function addEvent(eventAddress){
+  { type:ADD, eventAddress}
+}
 
 
 //look up event info
@@ -26,9 +44,7 @@ export default function reducer(state = {}, action){
 export function addEventToDB(_eventAddress){
   return async (dispatch) => {
     await firebaseRef.child('event/').push(_eventAddress)
-
-    //TODO: Add event action
-
+    dispatch(addEvent(_eventAddress))
   }
 }
 
@@ -38,13 +54,20 @@ export function lookupEvents(){
     var snapshot = await firebaseRef.child('event').once('value')
     var value = snapshot.val()||{}
     if(!_.isEmpty(value)){
-
-      //TODO: add event action
-
+      dispatch(addEvent(value))
     }
   }
 }
 
-// get event list from database
+// get event info
+export function getEventInfo(_eventAddress){
+  return async(dispatch) => {
+    let instance = await eventContract.at(_eventAddress)
+    let infoArr = await Promise.all([
+      instance.
+    ])
+
+  }
+}
 
 //get log of event
