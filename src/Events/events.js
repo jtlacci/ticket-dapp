@@ -9,25 +9,20 @@ const ADD_INFO = 'event/ADD_INFO'
 const ADD_LOG = 'event/ADD_LOG'
 
 const initialState = {
-  eventsIndex:{},
-  eventsArr:[],
-  eventLogs:[]
+  currentEvent:'',
+  eventInfo:{},
+  eventUserTickets:'',
+  eventUserLogs:[]
 }
 
 export default function reducer(state = initialState, action){
   switch(action.type){
     case ADD:
-      let eventIndex = state.eventsArr.length
-      return {...state,
-        eventsIndex:{
-          ...state.eventsIndex,
-          [action.eventAddress]:eventIndex
-        },
-        eventsArr:[...state.eventsArr,action.eventAddress]}
+      return{...state, currentEvent:action.eventAddress}
     case ADD_INFO:
-      return{...state, [action.eventAddress]:action.info}
+      return{...state, eventInfo:action.info}
     case ADD_LOG:
-      return{...state, eventLogs:[...state.eventLogs, action.eventLog]}
+      return{...state, eventUserLogs:[...state.eventUserLogs, action.eventLog]}
     default:
       return state
   }

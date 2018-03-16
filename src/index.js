@@ -10,7 +10,7 @@ import { syncHistoryWithStore } from 'react-router-redux'
 // Layouts
 import App from './App'
 import UserContainer from './User/UI/UserContainer'
-
+import EventsContainer from './Events/UI/EventsContainer'
 
 // Redux Store
 import store from './store'
@@ -31,9 +31,8 @@ function startApp(){
   ReactDOM.render((
       <Provider store={store}>
         <Router history={history}>
-          <Route path="/" component={App} >
-           <IndexRoute component={UserContainer}/>
-          </Route>
+          <Route path="/" component={App} />
+          <Route path="/:eventsFilter" component={App} />
         </Router>
       </Provider>
     ),
