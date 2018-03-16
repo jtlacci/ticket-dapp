@@ -35,7 +35,7 @@ class UserContainer extends React.Component {
     }if(userState == NOT_MEMBER){
       return('Please Sign Up For DappDevs')
     }if(userState == MEMBER){
-      return('Welcome To DappDevs ' + this.props.currentInfo.first)
+      return('Welcome To DappDevs ')
     }
   }
 
@@ -45,35 +45,12 @@ class UserContainer extends React.Component {
   }
 
   render() {
-    if(this.props.userState === NOT_MEMBER){
-      return(
-        <div>
-        <p>{this.getAccount()}</p>
-        <p>{this.getMessage()}</p>
-          <UserButton
-            text='Sign-Up'
-            onClick={this.props.toggleModal}/>
-          {this.props.modalIsOpen &&
-            <div>
-              <UserModal
-                _handleChange = {this.props.updateModal}
-                _inputs = {this.props.modalElements}
-              />
-              <UserButton
-                text ='Submit'
-                onClick = {this.handleSubmit}
-              />
-            </div>}
-        </div>
-      )
-    }else{
       return(
         <div>
         <p>{this.getAccount()}</p>
         <p>{this.getMessage()}</p>
         </div>
       )
-    }
   }
 }
 
@@ -86,8 +63,6 @@ function mapStateToProps({user}, props) {
   }else if(_.isEmpty(user.currentUser)){
     userState = NO_WEB3_ACCOUNT
   // if web3 account detected buy no DappDev Account
-  }else if(user.hasAccount == false){
-    userState = NOT_MEMBER
   }else{
     userState = MEMBER
   }

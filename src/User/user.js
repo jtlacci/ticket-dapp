@@ -99,10 +99,6 @@ export function getUser(){
   return async (dispatch) => {
     var user = await web3.eth.accounts[0]
     dispatch(updateUser(user))
-    // if user is valid
-    if(user && !_.isEmpty(user)){
-      dispatch(lookupUser(user))
-    }
   }
 }
 
@@ -122,24 +118,24 @@ export function setUserListener(){
   }
 }
 
-// create account
-export function createAccount(_user,_info){
-  return async (dispatch) => {
-  await firebaseRef.child('user/'+_user).set(_info)
-  dispatch(updateUserInfo(_user,_info))
-  dispatch(toggleModal())
-  dispatch(toggleHasAccount(true))
-  }
-
-}
-// lookup user from database
-export function lookupUser(_web3user){
-  return async (dispatch) => {
-    var snapshot = await firebaseRef.child('user/'+_web3user).once('value')
-    var value = snapshot.val()||{}
-    if(!_.isEmpty(value)){
-      dispatch(updateUserInfo(_web3user,value))
-      dispatch(toggleHasAccount(true))
-    }
-  }
-}
+// // create account
+// export function createAccount(_user,_info){
+//   return async (dispatch) => {
+//   await firebaseRef.child('user/'+_user).set(_info)
+//   dispatch(updateUserInfo(_user,_info))
+//   dispatch(toggleModal())
+//   dispatch(toggleHasAccount(true))
+//   }
+//
+// }
+// // lookup user from database
+// export function lookupUser(_web3user){
+//   return async (dispatch) => {
+//     var snapshot = await firebaseRef.child('user/'+_web3user).once('value')
+//     var value = snapshot.val()||{}
+//     if(!_.isEmpty(value)){
+//       dispatch(updateUserInfo(_web3user,value))
+//       dispatch(toggleHasAccount(true))
+//     }
+//   }
+// }
