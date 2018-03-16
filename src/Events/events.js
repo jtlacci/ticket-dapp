@@ -2,6 +2,7 @@ import web3 from '../Utils/web3'
 import eventContract from '../Utils/web3Contracts'
 import firebaseRef from '../Utils/firebase'
 
+var BigNumber = require('bignumber.js');
 var _ = require('lodash');
 
 const ADD = 'event/ADD'
@@ -11,8 +12,14 @@ const ADD_LOG = 'event/ADD_LOG'
 const initialState = {
   currentEvent:'',
   eventInfo:{},
-  eventUserTickets:'',
+  eventUserTickets:0,
   eventUserLogs:[]
+}
+
+function calculateTickets(_numTickets, _eventLog){
+  if(_eventLog.type == 'TicketReceipt'){
+    return _numTickets + _eventLog.tickets
+  }
 }
 
 export default function reducer(state = initialState, action){
@@ -22,7 +29,11 @@ export default function reducer(state = initialState, action){
     case ADD_INFO:
       return{...state, eventInfo:action.info}
     case ADD_LOG:
-      return{...state, eventUserLogs:[...state.eventUserLogs, action.eventLog]}
+      let eventUserTickets = calculateTickets(state.eventUserTickets,action.eventLog)
+      return{...state,
+        eventUserLogs:[...state.eventUserLogs, action.eventLog],
+        eventUserTickets
+        }
     default:
       return state
   }
@@ -105,9 +116,19 @@ export function getEventLogsByAccount(_account,_eventAddress){
           // add to unique txHash test
           test = {...test, [txHash]:snapshot }
           // add event to reducer
-          dispatch(addEventLog(snapshot))
+          dispatch(addEventLog(parseBigNumberToInt(snapshot)))
         }
       }
     })
   }
+}
+
+export function parseBigNumberToInt(_snapshot){
+  return _.mapValues(_snapshot, (value) => {
+    if(value instanceof BigNumber){
+      return value.toNumber()
+    }else{
+      return value
+    }
+  })
 }

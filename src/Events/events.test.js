@@ -1,5 +1,6 @@
 import reducer from './events'
 import * as actions from './events'
+var BigNumber = require('bignumber.js');
 
 const ADD = 'event/ADD'
 const ADD_INFO = 'event/ADD_INFO'
@@ -8,7 +9,7 @@ const ADD_LOG = 'event/ADD_LOG'
 const initialState = {
   currentEvent:'',
   eventInfo:{},
-  eventUserTickets:'',
+  eventUserTickets:0,
   eventUserLogs:[]
 }
 
@@ -31,11 +32,23 @@ describe('events', () => {
     )
   })
   it('should add event log', () => {
+    let rawEventLog = {
+      type:'TicketReceipt',
+      account:'0x0',
+      blockTx:'test',
+      tickets:new BigNumber(1)}
+    let eventLog = actions.parseBigNumberToInt(rawEventLog)
+    //should parse eventLog for big numbers
+    expect(eventLog.tickets).toEqual(1)
     expect(
-      reducer(undefined,{type:ADD_LOG,eventLog:{account:'0x0', blockTx:'test'}})
+      reducer(undefined,{
+        type:ADD_LOG,
+        eventLog
+      })
     ).toEqual(
       { ...initialState,
-        eventUserLogs:[{account:'0x0', blockTx:'test'}]}
+        eventUserLogs:[{type:'TicketReceipt',account:'0x0', blockTx:'test',tickets:1}],
+        eventUserTickets:1}
     )
   })
 })

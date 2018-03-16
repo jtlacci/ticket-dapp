@@ -26,7 +26,7 @@ contract Events is Owned
     address[] public ticketHolders;
 
     // Tickets Purchased Receipt
-    event TicketReceipt(address account, uint256 ticketsBought, uint256 change);
+    event TicketReceipt(address account, uint256 tickets, uint256 change);
     event RefundFailed(address holder, uint256 amount);
 
     function Events(string _name,
