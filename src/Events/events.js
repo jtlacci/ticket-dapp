@@ -1,3 +1,8 @@
+
+import Web3 from 'web3'
+import eventJSON from '../../build/contracts/Events.json'
+var contract = require('truffle-contract')
+
 import web3 from '../Utils/web3'
 import eventContract from '../Utils/web3Contracts'
 import firebaseRef from '../Utils/firebase'
@@ -8,6 +13,7 @@ var _ = require('lodash');
 const ADD = 'event/ADD'
 const ADD_INFO = 'event/ADD_INFO'
 const ADD_LOG = 'event/ADD_LOG'
+const ADD_ERROR = 'event/ADD_ERROR'
 
 const initialState = {
   currentEvent:'',
@@ -34,28 +40,49 @@ export default function reducer(state = initialState, action){
         eventUserLogs:[...state.eventUserLogs, action.eventLog],
         eventUserTickets
         }
+    case ADD_ERROR:
+      return{...state, error:action.error}
     default:
       return state
   }
 }
 
 // add event to list
-function addEvent(eventAddress){
-  { type:ADD, eventAddress}
+export function addEvent(eventAddress){
+  return{ type:ADD, eventAddress}
 }
 
 //look up event info
-function addEventInfo(eventAddress,info){
-  { type:ADD_INFO, eventAddress, info}
+export function addEventInfo(eventAddress,info){
+  return{ type:ADD_INFO, eventAddress, info}
 }
 
 //add event log
-function addEventLog(eventLog){
-  { type:ADD_LOG, eventLog}
+export function addEventLog(eventLog){
+  return{ type:ADD_LOG, eventLog}
+}
+
+//add event error
+export function addEventError(error){
+  return{ type:ADD_ERROR, error}
 }
 
 
 // side effects
+
+export function deployTestContract(){
+  console.log('deploying');
+  return async (dispatch) => {
+    try{
+    let eventContract = contract(eventJSON)
+    eventContract.setProvider(web3.currentProvider)
+    let instance = await eventContract.new(['test',10,1,10],{from:web3.eth.accounts[0],gasLimit:2000000})
+    console.log(instance);
+    }catch(e){
+      console.log(e);
+    }
+  }
+}
 
 // add event to database
 export function addEventToDB(_eventAddress){
@@ -79,16 +106,21 @@ export function lookupEvents(){
 // get event info
 export function getEventInfo(_eventAddress){
   return async(dispatch) => {
-    let instance = await eventContract.at(_eventAddress)
-    let [name,seats,seatsAvailable,price] =
-      await Promise.all([
-        instance.name.call(),
-        instance.seats.call(),
-        instance.seatsAvailable.call(),
-        instance.price.call()
-      ])
-    let info = {name, seats, seatsAvailable, price}
-    dispatch(addEventInfo(_eventAddress,info))
+    try{
+      let instance = await eventContract.at(_eventAddress)
+      let [name,seats,seatsAvailable,price] =
+        await Promise.all([
+          instance.name.call(),
+          instance.seats.call(),
+          instance.seatsAvailable.call(),
+          instance.price.call()
+        ])
+      let info = {name, seats, seatsAvailable, price}
+      dispatch(addEventInfo(_eventAddress,parseBigNumberToInt(info)))
+    }catch(e){
+      console.log(e);
+      dispatch(addEventError(e))
+    }
   }
 }
 
@@ -125,10 +157,11 @@ export function getEventLogsByAccount(_account,_eventAddress){
 
 export function parseBigNumberToInt(_snapshot){
   return _.mapValues(_snapshot, (value) => {
-    if(value instanceof BigNumber){
-      return value.toNumber()
-    }else{
-      return value
-    }
+      try{
+        return value.toNumber()
+      }catch(e){
+        return value
+        //TODO: add better Big Number Detection
+      }
   })
 }

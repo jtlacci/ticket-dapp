@@ -1,6 +1,6 @@
 
 const _ = require('lodash')
-
+import Web3 from 'web3'
 import web3 from './web3'
 import eventJSON from '../../build/contracts/Events.json'
 var contract = require('truffle-contract')
@@ -10,9 +10,8 @@ var events = (function () {
 
     function init() {
         var eventContract = contract(eventJSON)
-        var provided = eventContract.setProvider(web3.currentProvider)
-
-        return provided;
+        eventContract.setProvider(web3.currentProvider)
+        return eventContract;
     }
     return {
         init: function () {

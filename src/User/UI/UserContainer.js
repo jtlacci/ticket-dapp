@@ -8,6 +8,7 @@ import UserModal from './UserModal'
 import UserButton from './UserButton'
 
 import * as userActions from '../user';
+import * as eventActions from '../../Events/events'
 
 const NO_WEB3 = 'NO_WEB3'
 const NO_WEB3_ACCOUNT = 'NO_WEB3_ACCOUNT'
@@ -49,6 +50,10 @@ class UserContainer extends React.Component {
         <div>
         <p>{this.getAccount()}</p>
         <p>{this.getMessage()}</p>
+        <UserButton
+          text = {'Deploy Test Event'}
+          onClick = {this.props.deployTestContract}
+        />
         </div>
       )
   }
@@ -82,7 +87,8 @@ function mapStateToProps({user}, props) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    ...userActions
+    ...userActions,
+    ...eventActions
   }, dispatch)
 }
 
