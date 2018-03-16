@@ -1,11 +1,15 @@
 pragma solidity ^0.4.17;
 
 import "./Owned.sol";
+import "./EventToken.sol";
 
 contract Events is Owned
 {
     // Event has a name
     string public name;
+
+    // Event token
+    EventToken public token;
 
     // Number of seats total
     uint256 public seats;
@@ -22,7 +26,7 @@ contract Events is Owned
     address[] public ticketHolders;
 
     // Tickets Purchased Receipt
-    event TicketReceipt(address buyer, uint256 ticketsBought, uint256 change);
+    event TicketReceipt(address account, uint256 ticketsBought, uint256 change);
     event RefundFailed(address holder, uint256 amount);
 
     function Events(string _name,
